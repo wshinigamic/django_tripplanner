@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Columns</h1>
+
+    {% if routes1 %}
+    <ul>
+
+      {% for col_name in routes1 %}
+      <li>
+        {{ col_name }}
+      </li>
+      {% endfor %}
+
+    </ul>
+
+    {% else %}
+      <p>There are no books in the library.</p>
+    {% endif %}       
+{% endblock %}

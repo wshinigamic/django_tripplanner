@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Trip Planner</h1>
+    
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+        {{ form }}
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+    Click <a href = "{% url 'advanced_form' %}">here</a> for advanced options.
+
+{% endblock %}

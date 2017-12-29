@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Itinerary</h1>
+
+    {% if schedule %}
+    <ul>
+
+        {% for i in schedule %}
+        <li>
+            {% for j in i %}
+            <li>
+                {% for k in j %}
+                <li>{{k}}</li>
+                {% endfor %}
+            </li>
+            {% endfor %}
+            
+        </li>
+        {% endfor %}
+        
+
+    </ul>
+
+    {% else %}
+      <p>No solution found.</p>
+    {% endif %}       
+{% endblock %}
