@@ -40,7 +40,6 @@ parsel==1.2.0
 pathlib2==2.3.0
 Pattern==2.6
 pickleshare==0.7.4
-PIL==1.1.7
 prompt-toolkit==1.0.15
 protobuf==3.5.0.post1
 psycopg2==2.7.3.2
