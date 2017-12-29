@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
-DATABASES['default'] = dj_database.url.config()
+DATABASES['default'] = dj_database_url.config()
 
 
 # Static files (CSS, JavaScript, Images)
