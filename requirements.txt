@@ -51,7 +51,6 @@ PyDispatcher==2.0.5
 Pygments==2.2.0
 pyOpenSSL==17.0.0
 pyparsing==2.2.0
-pypiwin32==219
 PyStemmer==1.3.0
 python-christofides==0.1.2
 python-dateutil==2.6.1
