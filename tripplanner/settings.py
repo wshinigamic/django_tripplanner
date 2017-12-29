@@ -28,7 +28,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 's&0$iz0@@sg(q4k7hooj0#%mj9)p7h
 DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
 ALLOWED_HOSTS = [
-    'aqueous-atoll-45002.herokuapp.com'
+    'aqueous-atoll-45002.herokuapp.com',
+    '127.0.0.1'
     ]
 
 
@@ -128,7 +129,7 @@ STATIC_URL = '/static/'
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
-DATABASES['default'] = dj_database_url.config()
+DATABASES['default'].update(dj_database_url.config())
 
 
 # Static files (CSS, JavaScript, Images)
