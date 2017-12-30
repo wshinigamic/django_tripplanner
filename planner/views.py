@@ -10,12 +10,12 @@ from .forms import NameForm
 from .forms import BasicForm
 from .forms import AdvancedForm
 
-def index(request):
+def attractions_data(request):
     num_attractions = Attraction.objects.all().count()
 
     return render(
         request,
-        'index.html',
+        'attractions_data.html',
         context = {'num_attractions': num_attractions}
     )
 
@@ -23,7 +23,7 @@ def index(request):
 from django_pandas.io import read_frame
 import planner
 
-def index1(request):
+def index(request):
 
     if request.method == 'POST':
         form = BasicForm(request.POST)
@@ -32,7 +32,7 @@ def index1(request):
             country = form.cleaned_data['country']
             # Need to use country
             
-            qs = Attraction.objects.all()
+            qs = Attraction.objects.filter(country__iexact=country)
             df = read_frame(qs)
             columns={
                 'name' : 'Attraction',
@@ -73,9 +73,9 @@ def index1(request):
                 str_schedule = None
             return render(
                 request,
-                'test_output.html',
+                'output.html',
                 context = {'schedule': str_schedule}
-        )
+            )
 
     else:
         form = BasicForm()
@@ -86,40 +86,82 @@ def index1(request):
         context = {'form': form}
     )
 
+import datetime
 
 def advanced_form(request):
 
     if request.method == 'POST':
         form = AdvancedForm(request.POST)
-        qs = Attraction.objects.all()
-        df = read_frame(qs)
-        columns={
-            'name' : 'Attraction',
-            'rating': 'Rating',
-            'num_reviews': 'NumReviews',
-            'address': 'Address',
-            'duration': 'Durations',
-            'score': 'Score',
-            'coordinates': 'Coordinates',
-            'review_summary': 'ReviewsSummary',
-            'day_0': '0',
-            'day_1': '1',
-            'day_2': '2',
-            'day_3': '3',
-            'day_4': '4',
-            'day_5': '5',
-            'day_6': '6'
-            }
-        df = df.rename(columns = columns)
-        df = df.sort_values(by = 'Score', ascending = False)
-        df = df.reset_index(drop = True)
-        routes = planner.main(10, df, visit_coord = (1.351278, 103.712358),
-                              start_day = 3)
-        return render(
-            request,
-            'test_output.html',
-            context = {'routes': routes}
-        )
+        if form.is_valid():
+            country = form.cleaned_data['country']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            start_time = form.cleaned_data['start_time']
+            end_time = form.cleaned_data['end_time']
+            lunch_time = form.cleaned_data['lunch_time']
+            lunch_duration = form.cleaned_data['lunch_duration']
+            dinner_time = form.cleaned_data['dinner_time']
+            dinner_duration = form.cleaned_data['dinner_duration']
+            coordinates = form.cleaned_data['coordinates']
+
+            num_days = (end_date - start_date).days + 1
+            start_day = (start_date.weekday() + 1) % 7
+            start_time = start_time.hour*60 + start_time.minute
+            end_time = end_time.hour*60 + end_time.minute
+            lunch_time = lunch_time.hour*60 + lunch_time.minute
+            dinner_time = dinner_time.hour*60 + dinner_time.minute
+            if len(coordinates) == 0:
+                start_coords = [(1.284491, 103.847282)] * num_days
+                end_coords = [(1.284491, 103.847282)] * num_days
+            else:
+                start_coords = [eval(coordinates)] * num_days
+                end_coords = [eval(coordinates)] * num_days
+                
+            qs = Attraction.objects.filter(country__iexact=country)
+            df = read_frame(qs)
+            columns={
+                'name' : 'Attraction',
+                'rating': 'Rating',
+                'num_reviews': 'NumReviews',
+                'address': 'Address',
+                'duration': 'Durations',
+                'score': 'Score',
+                'coordinates': 'Coordinates',
+                'review_summary': 'ReviewsSummary',
+                'day_0': '0',
+                'day_1': '1',
+                'day_2': '2',
+                'day_3': '3',
+                'day_4': '4',
+                'day_5': '5',
+                'day_6': '6'
+                }
+            df = df.rename(columns = columns)
+            df = df.sort_values(by = 'Score', ascending = False)
+            df = df.reset_index(drop = True)
+            
+            output = planner.main_binary_search(
+                df, num_days, start_coords = start_coords,
+                end_coords = end_coords, start_day = start_day,
+                start_time = start_time, end_time = end_time,
+                lunch_time = lunch_time, lunch_duration = lunch_duration,
+                dinner_time = dinner_time, dinner_duration = dinner_duration
+            )
+            
+            if output is not None:
+                planned_address = output[2]
+                planned_reviews_summary = output[3]
+                events_list, time_schedules = planner.get_schedule(output)
+                str_schedule = planner.readable_list(events_list, time_schedules,
+                                                     planned_address,
+                                                     planned_reviews_summary)
+            else:
+                str_schedule = None
+            return render(
+                request,
+                'output.html',
+                context = {'schedule': str_schedule}
+            )
 
     else:
         form = AdvancedForm()

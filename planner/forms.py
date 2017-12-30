@@ -1,24 +1,85 @@
 from django import forms
+import re
 
 class NameForm(forms.Form):
     your_name = forms.CharField(label = 'Your name', max_length=100)
 
 
+COUNTRY_CHOICES =  (
+    ('Singapore', 'Singapore'),
+)
+
 class BasicForm(forms.Form):
-    num_days = forms.IntegerField(label = 'Number of days')
-    country = forms.CharField(label = 'Country', max_length = 50)
+    country = forms.ChoiceField(label = 'Country/ City', choices = COUNTRY_CHOICES)
+    num_days = forms.IntegerField(label = 'Number of days', initial = '5',
+                                  widget=forms.TextInput(attrs={'placeholder': ''}))
+    
 
 class AdvancedForm(forms.Form):
-    num_days = forms.IntegerField(label = 'Number of days')
-    start_day = forms.TimeField(label = 'Tour start date')
-    end_day = forms.TimeField(label = 'Tour end date')
-    start_time = forms.TimeField(label = 'Day start time')
-    end_time = forms.TimeField(label = 'Day end time')
-    lunch_time = forms.TimeField(label = 'Lunch time')
+    country = forms.ChoiceField(label = 'Country/ City', choices = COUNTRY_CHOICES)
+    start_date = forms.DateField(label = 'Tour start date',
+                                widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
+    end_date = forms.DateField(label = 'Tour end date',
+                              widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
+    start_time = forms.TimeField(label = 'Visit start time',
+                                 widget=forms.TextInput(attrs={'placeholder': 'HH:MM'}),
+                                 initial = '10:00')
+    end_time = forms.TimeField(label = 'Visit end time',
+                               widget=forms.TextInput(attrs={'placeholder': 'HH:MM'}),
+                               initial = '20:00')
+    lunch_time = forms.TimeField(label = 'Lunch time',
+                                 widget=forms.TextInput(attrs={'placeholder': 'HH:MM'}),
+                                 initial = '12:00')
     lunch_duration = forms.IntegerField(label = 'Lunch duration',
-                                        help_text="In minutes")
-    dinner_time = forms.TimeField(label = 'Dinner time')
-    dinner_duration = forms.IntegerField(label = 'Lunch duration',
-                                        help_text="In minutes")
+                                        widget=forms.TextInput(attrs={'placeholder': 'In minutes'}),
+                                        initial='60')
+    dinner_time = forms.TimeField(label = 'Dinner time',
+                                  widget=forms.TextInput(attrs={'placeholder': 'HH:MM'}),
+                                  initial='17:00')
+    dinner_duration = forms.IntegerField(label = 'Dinner duration',
+                                        widget=forms.TextInput(attrs={'placeholder': 'In minutes'}),
+                                         initial='60')
+    coordinates = forms.CharField(label = 'Visit Coordinates', required = False,
+                                  help_text = "Planner will search for attractions with specified coordinates as the center. Can be left blank.",
+                                  widget=forms.TextInput(attrs={'placeholder': 'latitude, longitude'}))
+
     
-    
+    def clean(self):
+        cleaned_data = super(AdvancedForm, self).clean()
+        
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        lunch_time = cleaned_data.get('lunch_time')
+        lunch_duration = cleaned_data.get('lunch_duration')
+        dinner_time = cleaned_data.get('dinner_time')
+        dinner_duration = cleaned_data.get('dinner_duration')
+        coordinates = cleaned_data.get('coordinates')
+
+        if start_date and end_date:
+            if start_date > end_date:
+                raise forms.ValidationError("Invalid dates - start date cannot be after end date.")
+
+        if start_time and end_time:
+            if start_time > end_time:
+                raise forms.ValidationError("Invalid time - start time cannot be after end time.")
+
+        if lunch_time:
+            if lunch_time < start_time:
+                raise forms.ValidationError("Lunch time must be after start time.")
+
+        if lunch_time and lunch_duration and dinner_time:
+            if (lunch_time.hour * 60 + lunch_time.minute + lunch_duration) > \
+               (dinner_time.hour * 60 + dinner_time.minute):
+                raise forms.ValidationError("Dinner time must be after lunch ends.")
+
+        if coordinates:
+            pattern = '^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$'
+            if not bool(re.match(pattern, coordinates)):
+                raise forms.ValidationError("Invalid coordinates.")
+
+
+
+
+        
