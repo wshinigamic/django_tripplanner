@@ -24,8 +24,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 's&0$iz0@@sg(q4k7hooj0#%mj9)p7hvh$tp@t+0sp)4+y0&$a_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = bool( os.environ.get('DJANGO_DEBUG', False) )
+ DEBUG = False
+#DEBUG = bool( os.environ.get('DJANGO_DEBUG', False) )
 
 ALLOWED_HOSTS = [
     'aqueous-atoll-45002.herokuapp.com',
