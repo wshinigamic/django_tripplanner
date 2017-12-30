@@ -571,6 +571,8 @@ def main_binary_search(df, num_days = 3, start_coords = [], end_coords = [],
                 min_num_loc = num_loc
             else:
                 max_num_loc = num_loc - 1
+        else:
+            break
     return best_output
 
 
