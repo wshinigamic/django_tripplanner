@@ -561,7 +561,7 @@ def main_binary_search(df, num_days = 3, start_coords = [], end_coords = [],
     best_output = None
     time_start = time.time()
     while max_num_loc != min_num_loc:
-        if (time.time() - start_time) < time_available:
+        if (time.time() - time_start) < time_available:
             num_loc = int(round((max_num_loc + min_num_loc)/2.0))
             output = main(num_loc, df, num_days, start_coords, end_coords, visit_coord,
                           start_day, start_time, end_time, lunch_time, lunch_duration,
@@ -582,9 +582,7 @@ if __name__ == "__main__":
     start_coords = [(1.351278, 103.712358)]*3
     end_coords = [(1.351278, 103.712358)]*3
     #main_binary_search(df, visit_coord = (1.352074, 103.819839), start_day = 2)
-    main(5, df, start_coords = start_coords, end_coords = end_coords)
 
-    main(10, 3, start_coords = ([(1.284491, 103.847282)]*3),
-                                  end_coords = ([(1.284491, 103.847282)]*3))
+    main_binary_search(df, start_coords = start_coords, end_coords = end_coords )
 
                     
