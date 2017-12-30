@@ -2,6 +2,7 @@ import haversine
 import pandas as pd
 import math
 import sets
+import time
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 
@@ -554,19 +555,22 @@ def main_binary_search(df, num_days = 3, start_coords = [], end_coords = [],
          end_time = 20*60, lunch_time = 720, lunch_duration = 60,
          dinner_time = 1020, dinner_duration = 60):
     # Set default max number of attractions per day to be 5.
+    time_available = 20
     max_num_loc = 5*num_days
     min_num_loc = num_days - 1
     best_output = None
+    time_start = time.time()
     while max_num_loc != min_num_loc:
-        num_loc = int(round((max_num_loc + min_num_loc)/2.0))
-        output = main(num_loc, df, num_days, start_coords, end_coords, visit_coord,
-                      start_day, start_time, end_time, lunch_time, lunch_duration,
-                      dinner_time, dinner_duration)
-        if output is not None:
-            best_output = output
-            min_num_loc = num_loc
-        else:
-            max_num_loc = num_loc - 1
+        if (time.time() - start_time) < time_available:
+            num_loc = int(round((max_num_loc + min_num_loc)/2.0))
+            output = main(num_loc, df, num_days, start_coords, end_coords, visit_coord,
+                          start_day, start_time, end_time, lunch_time, lunch_duration,
+                          dinner_time, dinner_duration)
+            if output is not None:
+                best_output = output
+                min_num_loc = num_loc
+            else:
+                max_num_loc = num_loc - 1
     return best_output
 
 
