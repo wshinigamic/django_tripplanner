@@ -554,9 +554,9 @@ def main_binary_search(df, num_days = 3, start_coords = [], end_coords = [],
          visit_coord = None, start_day = 0, start_time = 10*60,
          end_time = 20*60, lunch_time = 720, lunch_duration = 60,
          dinner_time = 1020, dinner_duration = 60):
-    # Set default max number of attractions per day to be 5.
+    # Set default max number of attractions per day to be 6.
     time_available = 20
-    max_num_loc = 5*num_days
+    max_num_loc = 6*num_days
     min_num_loc = num_days - 1
     best_output = None
     time_start = time.time()

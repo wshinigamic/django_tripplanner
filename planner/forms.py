@@ -62,17 +62,18 @@ class AdvancedForm(forms.Form):
                 raise forms.ValidationError("Invalid dates - start date cannot be after end date.")
 
         if start_time and end_time:
-            if start_time > end_time:
-                raise forms.ValidationError("Invalid time - start time cannot be after end time.")
+            if (start_time.hour*60 + start_time.minute + 4*60) > \
+               (end_time.hour*60 + end_time.minute):
+                raise forms.ValidationError("Invalid time - end time must be at least 4 hours after start time.")
 
         if lunch_time:
             if lunch_time < start_time:
                 raise forms.ValidationError("Lunch time must be after start time.")
 
         if lunch_time and lunch_duration and dinner_time:
-            if (lunch_time.hour * 60 + lunch_time.minute + lunch_duration) > \
-               (dinner_time.hour * 60 + dinner_time.minute):
-                raise forms.ValidationError("Dinner time must be after lunch ends.")
+            if (lunch_time.hour*60 + lunch_time.minute + lunch_duration) >= \
+               (dinner_time.hour*60 + dinner_time.minute):
+                raise forms.ValidationError("Dinner time must be strictly after lunch ends.")
 
         if coordinates:
             pattern = '^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$'
