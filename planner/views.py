@@ -23,14 +23,42 @@ def attractions_data(request):
 from django_pandas.io import read_frame
 import planner
 
+CITY_COORD = {
+    'Singapore': (1.284491, 103.847282),
+    'Australia': (-33.884244, 151.194860),
+    'Sydney': (-33.884244, 151.194860),
+    'Melbourne': (-37.813453, 144.964051),
+    'Perth': (-31.950509, 115.860469),
+    'Adelaide': (-34.928501, 138.600744),
+    'Gold Coast': (-28.016659, 153.399985),
+    'Newcastle': (-32.928334, 151.781666),
+    'Canberra': (-35.280937, 149.130009),
+    }
+
+ACTIVITIES_INDEX = {
+    'a': 'Nature & Parks',
+    'b': 'Sights & Landmarks',
+    'c': 'Shopping',
+    'd': 'Outdoor Activities',
+    'e': 'Museums',
+    'f': 'Features Animals',
+    'g': 'Fun & Games',
+    'h': 'Points of Interest & Landmarks'
+    }
+    
+
 def index(request):
 
     if request.method == 'POST':
         form = BasicForm(request.POST)
         if form.is_valid():
             num_days = form.cleaned_data['num_days']
-            country = form.cleaned_data['country']
-            # Need to use country
+            city = form.cleaned_data['city']
+            coord = CITY_COORD[city]
+            if city == 'Singapore':
+                country = 'Singapore'
+            else:
+                country = 'Australia'
             
             qs = Attraction.objects.filter(country__iexact=country)
             df = read_frame(qs)
@@ -53,9 +81,10 @@ def index(request):
                 }
             df = df.rename(columns = columns)
             df = df.sort_values(by = 'Score', ascending = False)
+            df = df[~df.Categories.str.contains('Food')]
             df = df.reset_index(drop = True)
-            start_coords = [(1.284491, 103.847282)]*num_days
-            end_coords = [(1.284491, 103.847282)]*num_days
+            start_coords = [coord]*num_days
+            end_coords = [coord]*num_days
             
             #output = planner.main_binary_search(df, num_days,
             #                      visit_coord = (1.284491, 103.847282))
@@ -93,7 +122,7 @@ def advanced_form(request):
     if request.method == 'POST':
         form = AdvancedForm(request.POST)
         if form.is_valid():
-            country = form.cleaned_data['country']
+            city = form.cleaned_data['city']
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
             start_time = form.cleaned_data['start_time']
@@ -110,9 +139,16 @@ def advanced_form(request):
             end_time = end_time.hour*60 + end_time.minute
             lunch_time = lunch_time.hour*60 + lunch_time.minute
             dinner_time = dinner_time.hour*60 + dinner_time.minute
+
+            coord = CITY_COORD[city]
+            if city == 'Singapore':
+                country = 'Singapore'
+            else:
+                country = 'Australia'
+                
             if len(coordinates) == 0:
-                start_coords = [(1.284491, 103.847282)] * num_days
-                end_coords = [(1.284491, 103.847282)] * num_days
+                start_coords = [coord] * num_days
+                end_coords = [coord] * num_days
             else:
                 start_coords = [eval(coordinates)] * num_days
                 end_coords = [eval(coordinates)] * num_days
@@ -138,7 +174,24 @@ def advanced_form(request):
                 }
             df = df.rename(columns = columns)
             df = df.sort_values(by = 'Score', ascending = False)
+            df = df[~df.Categories.str.contains('Food')]
             df = df.reset_index(drop = True)
+
+            """list_1 = []
+            list_0 = []
+            for index in ACTIVITIES_INDEX:
+                if form.cleaned_data['index'] == 1:
+                    list_1.append(ACTIVITIES_INDEX[index])
+                elif form.cleaned_data['index'] == 0:
+                    list_0.append(ACTIVITIES_INDEX[index])
+            for category in list_1:
+                mask = df.Categories.str.contains(category)
+                column_name = 'Score'
+                df.loc[mask, column_name] *= 1.5
+            for category in list_0:
+                mask = df.Categories.str.contains(category)
+                column_name = 'Score'
+                df.loc[mask, column_name] *= 2.0/3"""            
             
             output = planner.main_binary_search(
                 df, num_days, start_coords = start_coords,

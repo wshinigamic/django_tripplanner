@@ -25,6 +25,8 @@ class Attraction(models.Model):
     day_5 = models.CharField('5', max_length = 50)
     day_6 = models.CharField('6', max_length = 50)
     country = models.CharField('Country', max_length = 50)
+    about = models.TextField('About')
+    categories = models.CharField('Categories', max_length = 200)
 
     class Meta:
         ordering = ['country', '-score']

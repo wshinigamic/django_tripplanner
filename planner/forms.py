@@ -5,18 +5,27 @@ class NameForm(forms.Form):
     your_name = forms.CharField(label = 'Your name', max_length=100)
 
 
-COUNTRY_CHOICES =  (
+CITY_CHOICES =  (
     ('Singapore', 'Singapore'),
+    ('Australia', 'Australia'),
+    ('Sydney', 'Sydney'),
+    ('Melbourne', 'Melbourne'),
+    ('Brisbane', 'Brisbane'),
+    ('Perth', 'Perth'),
+    ('Adelaide', 'Adelaide'),
+    ('Gold Coast', 'Gold Coast'),
+    ('Newcastle', 'Newcastle'),
+    ('Canberra', 'Canberra'),
 )
 
 class BasicForm(forms.Form):
-    country = forms.ChoiceField(label = 'Country/ City', choices = COUNTRY_CHOICES)
+    country = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
     num_days = forms.IntegerField(label = 'Number of days', initial = '5',
                                   widget=forms.TextInput(attrs={'placeholder': ''}))
     
 
 class AdvancedForm(forms.Form):
-    country = forms.ChoiceField(label = 'Country/ City', choices = COUNTRY_CHOICES)
+    country = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
     start_date = forms.DateField(label = 'Tour start date',
                                 widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
     end_date = forms.DateField(label = 'Tour end date',
@@ -42,6 +51,7 @@ class AdvancedForm(forms.Form):
     coordinates = forms.CharField(label = 'Visit Coordinates', required = False,
                                   help_text = "Planner will search for attractions with specified coordinates as the center. Can be left blank.",
                                   widget=forms.TextInput(attrs={'placeholder': 'latitude, longitude'}))
+    
 
     
     def clean(self):
