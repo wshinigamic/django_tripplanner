@@ -27,6 +27,8 @@ attractions = [
         day_5 = df.loc[row]['5'],
         day_6 = df.loc[row]['6'],
         country = COUNTRY,
+        about = df.loc[row]['About'],
+        categories = df.loc[row]['Categories'],
     )
     for row in range(len(df))
 ]

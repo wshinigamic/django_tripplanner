@@ -77,7 +77,9 @@ def index(request):
                 'day_3': '3',
                 'day_4': '4',
                 'day_5': '5',
-                'day_6': '6'
+                'day_6': '6',
+                'about': 'About',
+                'categories': 'Categories',
                 }
             df = df.rename(columns = columns)
             df = df.sort_values(by = 'Score', ascending = False)
@@ -170,7 +172,9 @@ def advanced_form(request):
                 'day_3': '3',
                 'day_4': '4',
                 'day_5': '5',
-                'day_6': '6'
+                'day_6': '6',
+                'about': 'About',
+                'categories': 'Categories',
                 }
             df = df.rename(columns = columns)
             df = df.sort_values(by = 'Score', ascending = False)

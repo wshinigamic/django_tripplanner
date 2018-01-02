@@ -19,13 +19,13 @@ CITY_CHOICES =  (
 )
 
 class BasicForm(forms.Form):
-    country = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
+    city = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
     num_days = forms.IntegerField(label = 'Number of days', initial = '5',
                                   widget=forms.TextInput(attrs={'placeholder': ''}))
     
 
 class AdvancedForm(forms.Form):
-    country = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
+    city = forms.ChoiceField(label = 'Country/ City', choices = CITY_CHOICES)
     start_date = forms.DateField(label = 'Tour start date',
                                 widget=forms.TextInput(attrs={'placeholder': 'YYYY-MM-DD'}))
     end_date = forms.DateField(label = 'Tour end date',
