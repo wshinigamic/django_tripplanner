@@ -16,6 +16,7 @@ CITY_CHOICES =  (
     ('Gold Coast', 'Gold Coast'),
     ('Newcastle', 'Newcastle'),
     ('Canberra', 'Canberra'),
+    ('New York City', 'New York City'),
 )
 
 class BasicForm(forms.Form):

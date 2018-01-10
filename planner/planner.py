@@ -83,7 +83,11 @@ def main(num_loc, df, num_days = 3, start_coords = [], end_coords = [],
     attractions = data[5]
     address = data[6]
     reviews_summary = data[7]
+    about = data[8]
     no_depot = True
+
+    if len(locations) != num_loc + 2*num_days:
+        return None
 
     if len(start_coords) > 0:
         for i in range(len(start_coords)):
@@ -184,11 +188,13 @@ def main(num_loc, df, num_days = 3, start_coords = [], end_coords = [],
         planned_address = []
         planned_reviews_summary = []
         planned_travel_time = []
+        planned_about = []
         for day in range(num_days):
             planned_attractions.append([attractions[i] for i in routes[day]])
             planned_durations.append([visit_durations[i] for i in routes[day]])
             planned_address.append([address[i] for i in routes[day]])
             planned_reviews_summary.append([reviews_summary[i] for i in routes[day]])
+            planned_about.append([about[i] for i in routes[day]])
             trav_time = []
             for i in range(len(routes[day])):
                 if i == 0:
@@ -206,7 +212,8 @@ def main(num_loc, df, num_days = 3, start_coords = [], end_coords = [],
 
         output = [planned_attractions, planned_durations, planned_address,
                   planned_reviews_summary, planned_travel_time, lunch_time,
-                  lunch_duration, dinner_time, dinner_duration, start_time]
+                  lunch_duration, dinner_time, dinner_duration, start_time,
+                  planned_about]
         
         return output
 
@@ -254,10 +261,12 @@ def create_data_array(num_loc, df, start_coords = [], end_coords = [],
     start_times = []
     end_times = []
     closed_days_list = []
+    about = []
     
     df_coords = df["Coordinates"].tolist()
     if len(start_coords) == 0 and visit_coord == None:
         print "Must either specify start and end_coords or visit_coord"
+        return
     elif len(start_coords) > 0:
         search_coords_set = sets.Set()
         for start_coord, end_coord in zip(start_coords, end_coords):
@@ -313,7 +322,7 @@ def create_data_array(num_loc, df, start_coords = [], end_coords = [],
                         break
                 if flag == False or len(locations) == num_loc:
                     break
-
+                
         attractions = [
             df[df['Coordinates']==str(coord)]['Attraction'].reset_index(drop = True)[0]
             for coord in locations
@@ -325,7 +334,11 @@ def create_data_array(num_loc, df, start_coords = [], end_coords = [],
         reviews_summary = [
             df[df['Coordinates']==str(coord)]['ReviewsSummary'].reset_index(drop = True)[0]
             for coord in locations
-            ]        
+            ]
+        about = [
+            df[df['Coordinates']==str(coord)]['About'].reset_index(drop = True)[0]
+            for coord in locations
+            ]
 
         locations.extend(start_coords)
         locations.extend(end_coords)
@@ -378,11 +391,15 @@ def create_data_array(num_loc, df, start_coords = [], end_coords = [],
             df[df['Coordinates']==str(coord)]['ReviewsSummary'].reset_index(drop = True)[0]
             for coord in locations
             ]
+        about = [
+            df[df['Coordinates']==str(coord)]['About'].reset_index(drop = True)[0]
+            for coord in locations
+            ]
 
         locations.append(visit_coord)
         
     data = [locations, durations, start_times, end_times, closed_days_list,
-            attractions, address, reviews_summary]
+            attractions, address, reviews_summary, about]
 
     return data
 
@@ -456,7 +473,8 @@ def get_hours_details(df_row):
 def get_schedule(data):
     """data = [planned_attractions, planned_durations, planned_address,
                 planned_reviews_summary, planned_travel_time, lunch_time,
-                lunch_duration, dinner_time, dinner_duration, start_time]"""
+                lunch_duration, dinner_time, dinner_duration, start_time,
+                about]"""
     # Unpack the data
     attractions = data[0]
     durations = data[1]
@@ -468,6 +486,7 @@ def get_schedule(data):
     dinner_time = data[7]
     dinner_duration = data[8]
     start_time = data[9]
+    about = data[10]
     num_days = len(attractions)
 
     events_list = []
@@ -514,7 +533,7 @@ def get_schedule(data):
             
 
 def readable_list(events_list, time_schedules,
-                  planned_address, planned_reviews_summary):
+                  planned_address, planned_reviews_summary, planned_about):
     schedule_trip = []
     for day in range(len(events_list)):
         schedule_day = [["Day " + str(day + 1)]]
@@ -543,6 +562,8 @@ def readable_list(events_list, time_schedules,
                 event_details.append(time)
                 address = "Address: " + planned_address[day].pop(0)
                 event_details.append(address)
+                about = "About: " + planned_about[day].pop(0)
+                event_details.append(about)
                 rev_summary = "Reviews Summary: " + planned_reviews_summary[day].pop(0)
                 event_details.append(rev_summary)
                 schedule_day.append(event_details)

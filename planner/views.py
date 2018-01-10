@@ -33,6 +33,7 @@ CITY_COORD = {
     'Gold Coast': (-28.016659, 153.399985),
     'Newcastle': (-32.928334, 151.781666),
     'Canberra': (-35.280937, 149.130009),
+    'New York City': (40.7586153, -73.9783659),
     }
 
 ACTIVITIES_INDEX = {
@@ -57,6 +58,8 @@ def index(request):
             coord = CITY_COORD[city]
             if city == 'Singapore':
                 country = 'Singapore'
+            elif city == 'New York City':
+                country = 'USA'
             else:
                 country = 'Australia'
             
@@ -96,10 +99,12 @@ def index(request):
             if output is not None:
                 planned_address = output[2]
                 planned_reviews_summary = output[3]
+                planned_about = output[10]
                 events_list, time_schedules = planner.get_schedule(output)
                 str_schedule = planner.readable_list(events_list, time_schedules,
                                                      planned_address,
-                                                     planned_reviews_summary)
+                                                     planned_reviews_summary,
+                                                     planned_about)
             else:
                 str_schedule = None
             return render(
@@ -145,6 +150,8 @@ def advanced_form(request):
             coord = CITY_COORD[city]
             if city == 'Singapore':
                 country = 'Singapore'
+            elif city == 'New York City':
+                country = 'USA'
             else:
                 country = 'Australia'
                 
@@ -207,11 +214,13 @@ def advanced_form(request):
             
             if output is not None:
                 planned_address = output[2]
-                planned_reviews_summary = output[3]
+                planned_reviews_summary = output[3]                
+                planned_about = output[10]
                 events_list, time_schedules = planner.get_schedule(output)
                 str_schedule = planner.readable_list(events_list, time_schedules,
                                                      planned_address,
-                                                     planned_reviews_summary)
+                                                     planned_reviews_summary,
+                                                     planned_about)
             else:
                 str_schedule = None
             return render(
