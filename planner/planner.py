@@ -397,9 +397,12 @@ def create_data_array(num_loc, df, start_coords = [], end_coords = [],
             ]
 
         locations.append(visit_coord)
+
+        
         
     data = [locations, durations, start_times, end_times, closed_days_list,
             attractions, address, reviews_summary, about]
+    print len(locations), num_loc
 
     return data
 
