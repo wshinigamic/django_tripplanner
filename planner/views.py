@@ -294,7 +294,6 @@ def experimental_form(request):
 
             for category_index in more:
                 category = ACTIVITIES_INDEX[category_index]
-                print category
                 mask = df.Categories.str.contains(category)
                 column_name = 'Score'
                 df.loc[mask, column_name] *= decimal.Decimal(15)

@@ -130,8 +130,10 @@ class ExperimentalForm(forms.Form):
                                   help_text = "Planner will search for attractions with specified coordinates as the center. Can be left blank.",
                                   widget=forms.TextInput(attrs={'placeholder': 'latitude, longitude'}))
 
-    more = forms.MultipleChoiceField(label = 'More', choices=ACTIVITIES_INDEX)
-    less = forms.MultipleChoiceField(label = 'Less', choices=ACTIVITIES_INDEX)
+    more = forms.MultipleChoiceField(label = 'More', choices=ACTIVITIES_INDEX, required = False,
+                                     help_text = "Select categorie(s) you prefer more, if any.")
+    less = forms.MultipleChoiceField(label = 'Less', choices=ACTIVITIES_INDEX, required = False,
+                                     help_text = "Select categorie(s) you prefer less, if any.")
     
 
     
