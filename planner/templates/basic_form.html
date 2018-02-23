@@ -1,20 +1,25 @@
 {% extends "base_generic.html" %}
 
-{% block content %}
-    <h1>Trip Planner</h1>
-    
-    <form action="" method="post">
-        {% csrf_token %}
-        <table>
-        {{ form }}
-        </table>
-        <input type="submit" value="Submit" />
-    </form>
-    Click <a href = "{% url 'advanced_form' %}">here</a> for advanced options.
-    <br>
-    Click <a href = "{% url 'experimental_form' %}">here</a> for experimental options.
-    <br>
-    <br>    
-    Please allow up to 30 seconds for itinerary generation.
+{% load bootstrap3 %}
 
+{% block content %}
+    <div class="basic-content">
+        <h1>Trip Planner</h1>
+
+        <hr>
+        
+        <form action="" method="post" class="form-inline">
+            {% csrf_token %}
+            <h3>
+                {% bootstrap_label "I want to go " %}
+                {% bootstrap_field form.city layout='inline' size='medium' %}
+                {% bootstrap_label "for " %} 
+                {% bootstrap_field form.num_days layout='inline' size='medium' %}
+                {% bootstrap_label " days." %}
+                {% buttons submit='Submit' %}{% endbuttons %}
+            </h3>
+        </form>
+        <br>    
+        <p>Please allow up to 30 seconds for itinerary generation.</p>
+    </div>
 {% endblock %}

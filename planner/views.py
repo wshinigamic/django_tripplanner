@@ -304,6 +304,8 @@ def experimental_form(request):
                 df.loc[mask, column_name] *= decimal.Decimal(1.0/15)
 
             df = df.sort_values(by = 'Score', ascending = False)
+
+            print df
             
             output = planner.main_binary_search(
                 df, num_days, start_coords = start_coords,

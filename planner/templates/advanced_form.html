@@ -1,20 +1,39 @@
 {% extends "base_generic.html" %}
 
+{% load bootstrap3 %}
+
 {% block content %}
-    <h1>Trip Planner</h1>
+    <div class="content">
+        <h1>Trip Planner</h1>
 
-    <h2>Advanced Options</h2>
-    
-    <form action="" method="post">
-        {% csrf_token %}
-        <table>
-        {{ form }}
-        </table>
-        <input type="submit" value="Submit" />
-    </form>
-    <br>
-    Please allow up to 30 seconds for itinerary generation.
-    <br>
-    Lunch and dinner time are only weakly considered for more efficient generation.
+        <hr>
 
+        <h2>Advanced Options</h2>
+        
+        <form action="" method="post">
+            {% csrf_token %}
+            <h4>
+                {% for field in form %}
+                    <div class="col-xs-6">
+                        {% bootstrap_label field.label %}
+                    </div>
+                    <div class="col-xs-6">
+                        {% bootstrap_field field layout='inline' %}
+                    </div>
+                    {% if field.help_text %}
+                        <div class="col-xs-6">
+                        </div>
+                        <div class="col-xs-6" id="help_text">
+                            {% bootstrap_label field.help_text %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% buttons submit='Submit' %}{% endbuttons %}
+            </h4>
+        </form>
+
+        <p>Please allow up to 30 seconds for itinerary generation.</p>
+        
+        <p>Lunch and dinner time are only weakly considered for more efficient generation.</p>
+    </div>
 {% endblock %}

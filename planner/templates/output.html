@@ -1,28 +1,30 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Itinerary</h1>
+    <div class="output">
+        <h1>Itinerary</h1>
 
-    {% if schedule %}
-    <ul>
+        {% if schedule %}
+        <ul class = "list-group">
 
-        {% for i in schedule %}
-        <li>
-            {% for j in i %}
-            <li>
-                {% for k in j %}
-                <li>{{k}}</li>
+            {% for i in schedule %}
+            <li class="list-group-item">
+                {% for j in i %}
+                <li class="list-group-item">
+                    {% for k in j %}
+                    <li class="list-group-item">{{k}}</li>
+                    {% endfor %}
+                </li>
                 {% endfor %}
+                
             </li>
             {% endfor %}
             
-        </li>
-        {% endfor %}
-        
 
-    </ul>
+        </ul>
 
-    {% else %}
-      <p>No solution found. Please re-specify options.</p>
-    {% endif %}       
+        {% else %}
+          <p>No solution found. Please re-specify options.</p>
+        {% endif %}    
+    </div>    
 {% endblock %}
