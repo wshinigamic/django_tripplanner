@@ -29,7 +29,7 @@ incremental==17.5.0
 ipaddress==1.0.18
 ipython==5.5.0
 ipython-genutils==0.2.0
-lxml==4.1.1
+lxml==4.6.3
 matplotlib==2.1.0
 munkres==1.0.12
 networkx==2.0
